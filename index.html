@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LookBuddy - AI Fashion Assistant</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Montserrat', sans-serif;
+      background: #fef9f4;
+      color: #222;
+      padding: 0 10px;
+    }
+    header {
+      text-align: center;
+      background: #eb6a4d;
+      color: white;
+      padding: 20px 10px;
+    }
+    .container {
+      max-width: 600px;
+      margin: 30px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    h2 {
+      margin-top: 0;
+      color: #eb6a4d;
+    }
+    label {
+      font-weight: bold;
+      margin-top: 12px;
+      display: block;
+    }
+    input[type="text"], select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      margin-bottom: 14px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #eb6a4d;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #d65a3c;
+    }
+    #responseBox {
+      margin-top: 20px;
+      background: #fff8f3;
+      padding: 15px;
+      border-left: 5px solid #eb6a4d;
+      display: none;
+    }
+    .skin-tone-select {
+      display: grid;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .option {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      background: #f7f7f7;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .option span {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      margin-right: 10px;
+      border: 1px solid #888;
+    }
+    #recommendationIdBox {
+      margin: 20px 0;
+      background: #fef1ec;
+      padding: 10px;
+      border-left: 4px solid #eb6a4d;
+      font-weight: bold;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>LookBuddy</h1>
+    <p>Your AI Fashion & Fitness Assistant</p>
+  </header>
+  <div class="container">
+    <h2>Tell Us About You</h2>
+    <form id="userForm">
+      <label>Name</label>
+      <input type="text" id="name" placeholder="Enter your name" />
+      <label>Gender</label>
+      <select id="gender">
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+      </select>
+      <label>Age</label>
+      <select id="age"></select>
+      <label>Occasion</label>
+      <select id="occasion">
+        <option value="Casual">Casual</option>
+        <option value="Birthday">Birthday Party</option>
+        <option value="Wedding">Wedding</option>
+        <option value="Interview">Interview</option>
+        <option value="Gym">Gym</option>
+        <option value="Festival">Festival</option>
+        <option value="Formal">Formal</option>
+      </select>
+      <label>Style Preference</label>
+      <select id="style">
+        <option value="Simple & Clean">Simple & Clean</option>
+        <option value="Trendy/Youth">Trendy / Youth</option>
+        <option value="Streetwear">Streetwear / Hip</option>
+        <option value="Traditional">Traditional / Ethnic</option>
+        <option value="Minimalist">Minimalist / Pastel</option>
+        <option value="Loud">Loud / Fashion Forward</option>
+      </select>
+      <label>Body type :</label>
+      <select id="bodyType">
+        <option value="Ectomorph">Ectomorph</option>
+        <option value="Mesomorph">Mesomorph</option>
+        <option value="Endomorph">Endomorph</option>
+      </select>
+      <label for="skinTone">Choose Your Skin Tone</label>
+      <div class="skin-tone-select">
+        <div class="option" onclick="selectTone('Fair', '#f9e5d8')"><span style="background:#f9e5d8;"></span> Fair</div>
+        <div class="option" onclick="selectTone('Medium', '#d2a679')"><span style="background:#d2a679;"></span> Medium</div>
+        <div class="option" onclick="selectTone('Olive', '#a67b5b')"><span style="background:#a67b5b;"></span> Olive</div>
+        <div class="option" onclick="selectTone('Brown', '#8d5524')"><span style="background:#8d5524;"></span> Brown</div>
+        <div class="option" onclick="selectTone('Dark', '#3d2c1e')"><span style="background:#3d2c1e;"></span> Dark</div>
+      </div>
+      <input type="hidden" id="skinTone" name="skinTone" />
+      <p id="selectedToneLabel" style="margin-top:10px;font-weight:bold;"></p>
+      <label for="bodyWeight">Select Your Body Weight</label>
+      <select id="bodyWeight" name="bodyWeight" required>
+        <option value="">-- Choose Body Weight --</option>
+        <option value="40-45 kg">40 - 45 kg (Very Lean)</option>
+        <option value="46-50 kg">46 - 50 kg (Lean)</option>
+        <option value="51-55 kg">51 - 55 kg (Slightly Lean)</option>
+        <option value="56-60 kg">56 - 60 kg (Healthy Range)</option>
+        <option value="61-65 kg">61 - 65 kg (Average)</option>
+        <option value="66-70 kg">66 - 70 kg (Bulky)</option>
+        <option value="71-80 kg">71 - 80 kg (Heavy)</option>
+        <option value="81-90 kg">81 - 90 kg (Overweight)</option>
+        <option value="91+ kg">91+ kg (Obese or Very Heavy)</option>
+      </select>
+      <label for="height">Select Your Height</label>
+      <select id="height" name="height" required></select>
+      <label for="season">Select Season / Climate</label>
+      <select id="season" name="season" required>
+        <option value="">-- Choose Season --</option>
+        <option value="Summer">☀️ Summer (hot and humid)</option>
+        <option value="Monsoon">🌧️ Monsoon (rainy and sticky)</option>
+        <option value="Winter">❄️ Winter (cold and dry)</option>
+        <option value="Spring">🌸 Spring (pleasant & floral)</option>
+        <option value="Autumn">🍁 Autumn (breezy & dry)</option>
+        <option value="All Season">🌍 All Season (neutral)</option>
+      </select>
+      <button type="button" onclick="sendToAI()">Connect to AI & Get Suggestions</button>
+    </form>
+
+    <div id="recommendationIdBox"></div>
+
+    <div id="responseBox">
+      <h3>AI Recommendations</h3>
+      <div id="aiResponse">Loading...</div>
+    </div>
+
+    <hr />
+    <label for="searchId">Search by Recommendation ID</label>
+    <input type="text" id="searchId" placeholder="Enter ID like LB-87347" />
+    <button onclick="searchById()">Search Recommendation</button>
+  </div>
+
+  <script>
+    function generateId() {
+      return "LB-" + Math.floor(10000 + Math.random() * 90000);
+    }
+
+    function selectTone(tone, color) {
+      document.getElementById("skinTone").value = tone;
+      document.getElementById("selectedToneLabel").innerText = `Selected Skin Tone: ${tone}`;
+    }
+
+    function getColorSuggestions({ gender, skinTone, style, bodyType, season, occasion }) {
+      let topColors = [], bottomColors = [], combos = [];
+
+      const fairTones = ["Soft Pink", "Sky Blue", "Lavender", "Mint", "Beige"];
+      const mediumTones = ["Mustard", "Rust", "Peach", "Olive", "Teal"];
+      const oliveTones = ["Burgundy", "Forest Green", "Charcoal", "Navy", "Brown"];
+      const brownTones = ["Cobalt", "Cream", "Maroon", "Olive", "Slate Grey"];
+      const darkTones = ["White", "Light Grey", "Pastel Green", "Royal Blue", "Camel"];
+
+      if (skinTone === "Fair") topColors = fairTones;
+      if (skinTone === "Medium") topColors = mediumTones;
+      if (skinTone === "Olive") topColors = oliveTones;
+      if (skinTone === "Brown") topColors = brownTones;
+      if (skinTone === "Dark") topColors = darkTones;
+
+      bottomColors = ["Black", "Navy", "Khaki", "Grey", "White"];
+
+      if (style.includes("Streetwear")) {
+        topColors = ["Black", "White", "Neon Green", "Purple", "Red"];
+        bottomColors = ["Baggy Blue", "Dark Cargo", "Black", "Denim Grey", "Olive"];
+      } else if (style.includes("Minimalist")) {
+        topColors = ["Beige", "Ivory", "Blush", "Light Grey", "Soft Blue"];
+        bottomColors = ["Taupe", "Stone", "White", "Ash", "Grey"];
+      }
+
+      if (season === "Winter") bottomColors.push("Dark Grey");
+      if (season === "Summer") {
+        topColors.push("White", "Light Coral");
+        bottomColors.push("Light Blue");
+      }
+
+      if (occasion === "Interview") {
+        topColors = ["White", "Light Blue", "Beige", "Grey", "Soft Pink"];
+        bottomColors = ["Black", "Navy", "Charcoal", "Dark Grey", "Cream"];
+      } else if (occasion === "Wedding") {
+        topColors = ["Gold", "Royal Blue", "Maroon", "Emerald", "Peach"];
+        bottomColors = ["Cream", "Ivory", "Beige", "Golden Brown", "Navy"];
+      }
+
+      for (let i = 0; i < 5; i++) {
+        combos.push(`${topColors[i % topColors.length]} top + ${bottomColors[i % bottomColors.length]} bottom`);
+      }
+
+      return {
+        topColors: [...new Set(topColors)].slice(0, 5),
+        bottomColors: [...new Set(bottomColors)].slice(0, 5),
+        combos
+      };
+    }
+
+    function sendToAI() {
+      const name = document.getElementById("name").value.trim();
+      const gender = document.getElementById("gender").value;
+      const age = document.getElementById("age").value;
+      const occasion = document.getElementById("occasion").value;
+      const style = document.getElementById("style").value;
+      const bodyType = document.getElementById("bodyType").value;
+      const skinTone = document.getElementById("skinTone").value;
+      const weight = document.getElementById("bodyWeight").value;
+      const height = document.getElementById("height").value;
+      const season = document.getElementById("season").value;
+
+      const recId = generateId();
+      const suggestions = getColorSuggestions({ gender, skinTone, style, bodyType, season, occasion });
+
+      const result = `
+        👤 <b>${name}</b> (${gender}, ${age} yrs)<br>
+        🎯 Occasion: <b>${occasion}</b><br>
+        💡 Style: <b>${style}</b><br>
+        🧍 Body Type: <b>${bodyType}</b><br>
+        🎨 Skin Tone: <b>${skinTone}</b><br>
+        📏 Height: ${height} | ⚖️ Weight: ${weight}<br>
+        🌀 Season: ${season}<br>
+        <hr>
+        <p><strong>Top Colors:</strong> ${suggestions.topColors.join(", ")}</p>
+        <p><strong>Bottom Colors:</strong> ${suggestions.bottomColors.join(", ")}</p>
+        <p><strong>Outfit Ideas:</strong><br>${suggestions.combos.map(c => `🔹 ${c}`).join("<br>")}</p>
+      `;
+
+      document.getElementById("aiResponse").innerHTML = result;
+      document.getElementById("responseBox").style.display = "block";
+      document.getElementById("recommendationIdBox").innerText = "🆔 Recommendation ID: " + recId;
+      document.getElementById("recommendationIdBox").style.display = "block";
+
+      localStorage.setItem(recId, JSON.stringify({ resultHtml: result }));
+    }
+
+    function searchById() {
+      const id = document.getElementById("searchId").value.trim();
+      const data = localStorage.getItem(id);
+      if (data) {
+        const parsed = JSON.parse(data);
+        document.getElementById("aiResponse").innerHTML = parsed.resultHtml;
+        document.getElementById("responseBox").style.display = "block";
+        document.getElementById("recommendationIdBox").innerText = "🆔 Recommendation ID: " + id;
+        document.getElementById("recommendationIdBox").style.display = "block";
+      } else {
+        alert("No recommendation found for ID: " + id);
+      }
+    }
+
+    window.onload = function () {
+      const ageSelect = document.getElementById("age");
+      for (let i = 10; i <= 80; i++) {
+        let opt = document.createElement("option");
+        opt.value = i;
+        opt.text = i;
+        ageSelect.appendChild(opt);
+      }
+
+      const heightSelect = document.getElementById("height");
+      for (let ft = 4; ft <= 6; ft++) {
+        for (let inch = 0; inch < 12; inch++) {
+          const formatted = `${ft}'${inch}"`;
+          let option = document.createElement("option");
+          option.value = formatted;
+          option.text = formatted;
+          heightSelect.appendChild(option);
+          if (ft === 6 && inch === 5) break;
+        }
+      }
+    };
+  </script>
+</body>
+</html>
